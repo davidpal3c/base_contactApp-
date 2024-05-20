@@ -4,20 +4,30 @@ from models import Contact
 
 @app.route("/contacts", methods=['GET'])
 def get_contacts():
+    """
+    Fetches all contacts from the database.
+
+    Returns:
+        json: A JSON object containing a list of contacts.
+    """
     contacts = Contact.query.all()
     json_contacts = list(map(lambda x: x.to_json(), contacts))
     return jsonify({"contacts": json_contacts})
 
 @app.route("/create_contact", methods=['POST'])
 def create_contacts():
+    """
+    Creates a new contact in the database.
+
+    Returns:
+        json: A JSON object containing a success message.
+    """
     first_name = request.json.get('firstName')
     last_name = request.json.get('lastName')
     email = request.json.get('email')
 
     if not first_name or not last_name or not email:
-        return (
-            jsonify({"message": "You must include a first name, last name and email"})
-        )
+        return jsonify({"message": "You must include a first name, last name and email"}), 400
    
     new_contact = Contact(first_name=first_name, last_name=last_name, email=email)
     try:
@@ -30,6 +40,15 @@ def create_contacts():
 
 @app.route("/update_contact/<int:user_id>", methods=['PATCH'])
 def update_contact(user_id):
+    """
+    Updates an existing contact in the database.
+
+    Args:
+        user_id (int): The ID of the contact to update.
+
+    Returns:
+        json: A JSON object containing a success message.
+    """
     contact = Contact.query.get(user_id)
     
     if not contact:
@@ -44,19 +63,28 @@ def update_contact(user_id):
 
     return jsonify({"message": "User updated."}), 200
 
-
 @app.route("/delete_contact/<int:user_id>", methods=['DELETE'])
 def delete_contact(user_id):
-    contact = Contact.query.get(user_id)
+    """
+    Deletes an existing contact from the database.
 
+    Args:
+        user_id (int): The ID of the contact to delete.
+
+    Returns:
+        json: A JSON object containing a success message.
+    """
+    contact = Contact.query.get(user_id)
+    
     if not contact:
         return jsonify({"message": "User not found"}), 404
     
-    db.session.delete(contact)
-    db.session.commit()
-
-    return jsonify({"message": "User deleted!"}), 200
-
+    try:
+        db.session.delete(contact)
+        db.session.commit()
+        return jsonify({"message": "User deleted."}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
 
 
 if __name__ == "__main__":
