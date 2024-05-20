@@ -73,7 +73,7 @@ A simple contact management application built with React (frontend) and Flask (b
 
 1.  **Navigate to the frontend directory:**
 
-   ```bash
+    ```bash
     cd ../frontend
 
 
@@ -85,6 +85,7 @@ A simple contact management application built with React (frontend) and Flask (b
 
 3. **Run the development server:**
 
+   ```bash
     npm run dev
 
 
@@ -92,15 +93,15 @@ A simple contact management application built with React (frontend) and Flask (b
 How to Run
 
 1.  **Start the Flask backend server:**
-
+    ```bash
     flask run
 
 2. **Start the React development server:**
-
+   ```bash
     npm run dev
 
 3. **Open your browser and navigate to:**
-
+   ```bash
     http://localhost:3000
 
 
