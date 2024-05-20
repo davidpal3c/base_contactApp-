@@ -1,36 +1,50 @@
 import { useState } from "react";
 
+/**
+ * ContactForm component for creating or updating a contact.
+ * 
+ * @param {Object} props - Component props.
+ * @param {Object} props.existingContact - The existing contact data to be edited.
+ * @param {Function} props.updateCallback - Callback function to trigger after form submission.
+ * 
+ * @returns {JSX.Element} The rendered ContactForm component.
+ */
 const ContactForm = ({ existingContact = {}, updateCallback }) => {
     const [firstName, setFirstName] = useState(existingContact.firstName || "");
     const [lastName, setLastName] = useState(existingContact.lastName || "");
     const [email, setEmail] = useState(existingContact.email || "");
 
-    const updating = Object.entries(existingContact).length !== 0
+    const updating = Object.entries(existingContact).length !== 0;
 
+    /**
+     * Handles form submission for creating or updating a contact.
+     * 
+     * @param {Event} e - The form submission event.
+     */
     const onSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         const data = {
             firstName,
             lastName,
             email
-        }
-        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
+        };
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
         const options = {
             method: updating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
-        }
-        const response = await fetch(url, options)
+        };
+        const response = await fetch(url, options);
         if (response.status !== 201 && response.status !== 200) {
-            const data = await response.json()
-            alert(data.message)
+            const data = await response.json();
+            alert(data.message);
         } else {
-            updateCallback()
+            updateCallback();
         }
-    }
+    };
 
     return (
         <form onSubmit={onSubmit}>
@@ -66,4 +80,4 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
     );
 };
 
-export default ContactForm
+export default ContactForm;
